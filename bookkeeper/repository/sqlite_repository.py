@@ -18,12 +18,11 @@ class SQLiteRepository(AbstractRepository[T]):
         self.fields = get_annotations(cls, eval_str=True)
         self.fields.pop('pk')
 
-
-        #with sqlite3.connect(self.db_file) as con:
+        # with sqlite3.connect(self.db_file) as con:
         #    cur = con.cursor()
         #    cur.execute(f'DROP TABLE IF EXISTS {self.table_name}')
         #    cur.execute(f'CREATE TABLE IF NOT EXISTS {self.table_name} ({attributes})')
-        #con.close()
+        # con.close()
 
     def add(self, obj: T) -> int:
         names = ', '.join(self.fields.keys())
@@ -67,7 +66,14 @@ class SQLiteRepository(AbstractRepository[T]):
 
     def update(self, obj: T) -> None:
         """ Обновить данные об объекте. Объект должен содержать поле pk. """
-        pass
+
+        names = list(self.fields.keys())
+        sets = ', '.join(f'{name} = \'{getattr(obj, name)}\'' for name in names)
+        with sqlite3.connect(self.db_file) as con:
+            cur = con.cursor()
+            cur.execute('PRAGMA foreign_keys = ON')
+            cur.execute(f'UPDATE {self.table_name} SET {sets} WHERE pk = {obj.pk}')
+        con.close()
 
     def delete(self, pk: int) -> None:
         """ Удалить запись """
