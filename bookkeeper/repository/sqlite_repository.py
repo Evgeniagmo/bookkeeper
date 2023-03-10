@@ -25,6 +25,11 @@ class SQLiteRepository(AbstractRepository[T]):
         # con.close()
 
     def add(self, obj: T) -> int:
+        """
+        Добавить объект в репозиторий, вернуть id объекта,
+        также записать id в атрибут pk.
+        """
+
         names = ', '.join(self.fields.keys())
         p = ', '.join("?" * len(self.fields))
         values = [getattr(obj, x) for x in self.fields]
@@ -41,7 +46,15 @@ class SQLiteRepository(AbstractRepository[T]):
 
     def get(self, pk: int) -> T | None:
         """ Получить объект по id """
-        pass
+
+        with sqlite3.connect(self.db_file) as con:
+            cur = con.cursor()
+            cur.execute('PRAGMA foreign_keys = ON')
+            cur.execute(f'SELECT * FROM {self.table_name} WHERE pk = {pk}')
+            tuple_obj = cur.fetchone()
+        con.close()
+        obj = self.cls(tuple_obj)
+        return obj
 
     def get_all(self, where: dict[str, Any] | None = None) -> list[T]:
         """
@@ -49,6 +62,7 @@ class SQLiteRepository(AbstractRepository[T]):
         where - условие в виде словаря {'название_поля': значение}
         если условие не задано (по умолчанию), вернуть все записи
         """
+
         with sqlite3.connect(self.db_file) as con:
             cur = con.cursor()
             cur.execute('PRAGMA foreign_keys = ON')
