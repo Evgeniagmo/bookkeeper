@@ -13,7 +13,6 @@ class TestSQLiteRepo:
 def custom_class():
     return TestSQLiteRepo
 
-
 @pytest.fixture
 def repo():
     return SQLiteRepository('test.db', TestSQLiteRepo)

@@ -41,6 +41,10 @@ class SQLiteRepository(AbstractRepository[T]):
         также записать id в атрибут pk.
         """
 
+        if not hasattr(obj, 'pk'):
+            raise ValueError("cannot add object without attribute pk")
+        if getattr(obj, 'pk') is not None:
+            raise ValueError("cannot add object with defined attribute pk")
         names = ', '.join(self.fields.keys())
         p = ', '.join("?" * len(self.fields))
         values = [getattr(obj, x) for x in self.fields]
@@ -62,9 +66,11 @@ class SQLiteRepository(AbstractRepository[T]):
             cur = con.cursor()
             cur.execute('PRAGMA foreign_keys = ON')
             cur.execute(f'SELECT * FROM {self.table_name} WHERE pk = {pk}')
-            tuple_obj = cur.fetchone()
+            result_obj = cur.fetchone()
         con.close()
-        obj = self.cls(tuple_obj)
+        if result_obj is None:
+            return None
+        obj = self.cls(result_obj)
         return obj
 
     def get_all(self, where: dict[str, Any] | None = None) -> list[T]:
@@ -92,6 +98,8 @@ class SQLiteRepository(AbstractRepository[T]):
     def update(self, obj: T) -> None:
         """ Обновить данные об объекте. Объект должен содержать поле pk. """
 
+        if obj.pk == 0:
+            raise ValueError("object with unknown primary key")
         names = list(self.fields.keys())
         sets = ', '.join(f'{name} = \'{getattr(obj, name)}\'' for name in names)
         with sqlite3.connect(self.db_file) as con:
@@ -103,6 +111,8 @@ class SQLiteRepository(AbstractRepository[T]):
     def delete(self, pk: int) -> None:
         """ Удалить запись """
 
+        if self.get(pk) is None:
+            raise KeyError("no object with such pk")
         with sqlite3.connect(self.db_file) as con:
             cur = con.cursor()
             cur.execute('PRAGMA foreign_keys = ON')
