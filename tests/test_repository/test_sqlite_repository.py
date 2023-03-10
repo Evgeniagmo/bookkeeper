@@ -4,14 +4,17 @@ import pytest
 
 from dataclasses import dataclass
 
+
 @dataclass
 class TestSQLiteRepo:
     pk: int = 0
     text: str = ''
 
+
 @pytest.fixture
 def custom_class():
     return TestSQLiteRepo
+
 
 @pytest.fixture
 def repo():

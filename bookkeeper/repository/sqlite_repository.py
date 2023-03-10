@@ -43,7 +43,9 @@ class SQLiteRepository(AbstractRepository[T]):
 
         if not hasattr(obj, 'pk'):
             raise ValueError("cannot add object without attribute pk")
-        if getattr(obj, 'pk') is not None:
+        # if getattr(obj, 'pk') is not None:
+        #    raise ValueError("cannot add object with defined attribute pk")
+        if getattr(obj, 'pk', None) != 0:
             raise ValueError("cannot add object with defined attribute pk")
         names = ', '.join(self.fields.keys())
         p = ', '.join("?" * len(self.fields))
@@ -70,7 +72,7 @@ class SQLiteRepository(AbstractRepository[T]):
         con.close()
         if result_obj is None:
             return None
-        obj = self.cls(result_obj)
+        obj = self.cls(*result_obj)  # in order to avoid TestSQLiteRepo(pk=(1, ''), text='')
         return obj
 
     def get_all(self, where: dict[str, Any] | None = None) -> list[T]:
