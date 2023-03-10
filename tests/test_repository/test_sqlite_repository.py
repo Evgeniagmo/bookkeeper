@@ -55,3 +55,23 @@ def test_cannot_update_without_pk(repo, custom_class):
     obj = custom_class()
     with pytest.raises(ValueError):
         repo.update(obj)
+
+
+def test_get_all(repo, custom_class):
+    objects = [custom_class() for i in range(5)]
+    for o in objects:
+        repo.add(o)
+    assert repo.get_all() == objects
+
+
+def test_get_all_with_condition(repo, custom_class):
+    objects = []
+    for i in range(5):
+        o = custom_class()
+        o.text = 'test'
+        repo.add(o)
+        objects.append(o)
+    assert repo.get_all({'pk': 5}) == [objects[4]]
+    assert repo.get_all({'text': 'test'}) == objects
+    assert repo.get_all({'pk': 1, 'text': 'test'}) == [objects[0]]
+    assert repo.get_all({'text': 'no_test'}) == []
