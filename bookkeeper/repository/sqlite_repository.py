@@ -18,11 +18,22 @@ class SQLiteRepository(AbstractRepository[T]):
         self.fields = get_annotations(cls, eval_str=True)
         self.fields.pop('pk')
 
-        # with sqlite3.connect(self.db_file) as con:
-        #    cur = con.cursor()
-        #    cur.execute(f'DROP TABLE IF EXISTS {self.table_name}')
-        #    cur.execute(f'CREATE TABLE IF NOT EXISTS {self.table_name} ({attributes})')
-        # con.close()
+        attr_names = list(self.fields.keys())
+        for n in range(len(attr_names)):
+            attr_names[n] = str(attr_names[n])
+        attr_values = list(self.fields.values())
+        for v in range(len(attr_values)):
+            if str(attr_values[v]).find('int') != -1:
+                attr_values[v] = 'INTEGER'
+            else:
+                attr_values[v] = 'TEXT'
+        attributes = list(n + ' ' + v for (n, v) in zip(attr_names, attr_values))
+        attributes = ', '.join(['pk INTEGER PRIMARY KEY'] + attributes)
+        with sqlite3.connect(self.db_file) as con:
+            cur = con.cursor()
+            cur.execute(f'DROP TABLE IF EXISTS {self.table_name}')
+            cur.execute(f'CREATE TABLE IF NOT EXISTS {self.table_name} ({attributes})')
+        con.close()
 
     def add(self, obj: T) -> int:
         """
