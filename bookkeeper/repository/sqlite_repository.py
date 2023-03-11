@@ -1,11 +1,19 @@
+"""
+Модуль для работы с базой данных с использованием СУБД sqlite3
+"""
+
 import sqlite3
 
 from inspect import get_annotations
+from typing import Any
 from bookkeeper.repository.abstract_repository import AbstractRepository, T
-from typing import Generic, TypeVar, Protocol, Any
 
 
 class SQLiteRepository(AbstractRepository[T]):
+    """
+    Класс репозитория, поддерживающий CRUD-операции на языке sqlite
+    """
+
     db_file: str
     cls: type
     table_name: str
@@ -19,14 +27,14 @@ class SQLiteRepository(AbstractRepository[T]):
         self.fields.pop('pk')
 
         attr_names = list(self.fields.keys())
-        for n in range(len(attr_names)):
-            attr_names[n] = str(attr_names[n])
+        for name in range(len(attr_names)):
+            attr_names[name] = str(attr_names[name])
         attr_values = list(self.fields.values())
-        for v in range(len(attr_values)):
-            if str(attr_values[v]).find('int') != -1:
-                attr_values[v] = 'INTEGER'
+        for val in range(len(attr_values)):
+            if str(attr_values[val]).find('int') != -1:
+                attr_values[val] = 'INTEGER'
             else:
-                attr_values[v] = 'TEXT'
+                attr_values[val] = 'TEXT'
         attributes = list(n + ' ' + v for (n, v) in zip(attr_names, attr_values))
         attributes = ', '.join(['pk INTEGER PRIMARY KEY'] + attributes)
         with sqlite3.connect(self.db_file) as con:
@@ -72,7 +80,7 @@ class SQLiteRepository(AbstractRepository[T]):
         con.close()
         if result_obj is None:
             return None
-        obj = self.cls(*result_obj)  # in order to avoid TestSQLiteRepo(pk=(1, ''), text='')
+        obj = self.cls(*result_obj)  # to avoid TestSQLiteRepo(pk=(1, ''), text='')
         return obj
 
     def get_all(self, where: dict[str, Any] | None = None) -> list[T]:
