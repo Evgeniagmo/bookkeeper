@@ -1,9 +1,6 @@
 from PySide6.QtWidgets import QVBoxLayout, QLabel, QWidget, QGridLayout, QComboBox, QLineEdit, QPushButton
 from PySide6 import QtCore, QtWidgets
 
-from bookkeeper.models.category import Category
-from bookkeeper.repository.sqlite_repository import SQLiteRepository
-cat_repo = SQLiteRepository[Category]('test.db', Category)
 
 class TableModel(QtCore.QAbstractTableModel):
     def __init__(self, data):
@@ -27,11 +24,11 @@ class TableModel(QtCore.QAbstractTableModel):
         return len(self._data[0])
 
 
-
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
+        self.item_model = None
         self.setWindowTitle("Программа для ведения бюджета")
         self.setFixedSize(500, 600)
 
@@ -45,38 +42,49 @@ class MainWindow(QtWidgets.QMainWindow):
         self.layout.addWidget(QLabel('Бюджет'))
         self.layout.addWidget(QLabel('<TODO: таблица бюджета>\n\n\n\n\n\n\n\n'))
 
-        bottom_controls = QGridLayout()
+        self.bottom_controls = QGridLayout()
 
-        bottom_controls.addWidget(QLabel('Сумма'), 0, 0)
+        self.bottom_controls.addWidget(QLabel('Сумма'), 0, 0)
 
-        amount_line_edit = QLineEdit()
+        self.amount_line_edit = QLineEdit()
 
-        bottom_controls.addWidget(amount_line_edit, 0, 1)
-        #bottom_controls.addWidget(QLabel('=============='), 0, 2)
-        bottom_controls.addWidget(QLabel('Категория'), 1, 0)
+        self.bottom_controls.addWidget(self.amount_line_edit, 0, 1)  # TODO: добавить валидатор
+        self.bottom_controls.addWidget(QLabel('Категория'), 1, 0)
 
-        category_dropdown = QComboBox()
-        category_dropdown.addItems(['Продукты', 'Тест', 'Тест'])
+        self.category_dropdown = QComboBox()
 
-        bottom_controls.addWidget(category_dropdown, 1, 1)
+        self.bottom_controls.addWidget(self.category_dropdown, 1, 1)
 
-        category_edit_button = QPushButton('Редактировать')
-        bottom_controls.addWidget(category_edit_button, 1, 2)
+        self.category_edit_button = QPushButton('Редактировать')
+        self.bottom_controls.addWidget(self.category_edit_button, 1, 2)
 
-        expense_add_button = QPushButton('Добавить')
-        bottom_controls.addWidget(expense_add_button, 2, 1)
+        self.expense_add_button = QPushButton('Добавить')
+        self.bottom_controls.addWidget(self.expense_add_button, 2, 1)
 
-        bottom_widget = QWidget()
-        bottom_widget.setLayout(bottom_controls)
+        self.bottom_widget = QWidget()
+        self.bottom_widget.setLayout(self.bottom_controls)
 
-        self.layout.addWidget(bottom_widget)
-
-        data = cat_repo.get_all()
-
-        self.model = TableModel(data)
-        self.expenses_grid.setModel(self.model)
+        self.layout.addWidget(self.bottom_widget)
 
         self.widget = QWidget()
         self.widget.setLayout(self.layout)
 
         self.setCentralWidget(self.widget)
+
+    def set_expense_table(self, data):
+        self.item_model = TableModel(data)
+        self.expenses_grid.setModel(self.item_model)
+
+    def set_category_dropdown(self, data):
+        for tup in data:
+            self.category_dropdown.addItem(tup[1], tup[0])
+
+    def on_expense_add_button_clicked(self, slot):
+        self.expense_add_button.clicked.connect(slot)
+
+    def get_amount(self) -> float:
+        return float(self.amount_line_edit.text())  # TODO: обработка исключений
+
+
+    def get_selected_cat(self) -> int:
+        return self.category_dropdown.itemData(self.category_dropdown.currentIndex())
