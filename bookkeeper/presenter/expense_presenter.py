@@ -9,8 +9,9 @@ class ExpensePresenter:
         self.view = view
         self.cat_data = cat_repo.get_all()
         self.view.on_expense_add_button_clicked(self.handle_expense_add_button_clicked)
+        self.exp_repo = exp_repo
         self.exp_data = []
-        for single_exp in exp_repo.get_all():
+        for single_exp in self.exp_repo.get_all():
             self.exp_data.append(
                 single_exp.make_tuple_from_attr(get_annotations(Expense)))
 
@@ -20,4 +21,13 @@ class ExpensePresenter:
         self.view.set_category_dropdown(self.cat_data)
 
     def handle_expense_add_button_clicked(self):
-        print('123')
+
+        # TODO: надо обновить таблицу после добавления
+
+        cat_pk = self.view.get_selected_cat()
+        amount = self.view.get_amount()
+        exp = Expense(amount, cat_pk)
+        self.exp_repo.add(exp)
+        print(cat_pk, amount)
+
+

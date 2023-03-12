@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QVBoxLayout, QLabel, \
     QWidget, QGridLayout, QComboBox, QLineEdit, QPushButton
-from PySide6 import QtCore, QtWidgets
+from PySide6 import QtCore, QtWidgets, QtGui
 
 
 class TableModel(QtCore.QAbstractTableModel):
@@ -49,6 +49,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.bottom_controls.addWidget(QLabel('Сумма'), 0, 0)
 
         self.amount_line_edit = QLineEdit()
+        self.amount_line_edit.setValidator(QtGui.QDoubleValidator(1., 100000000., 2, self))
 
         self.bottom_controls.addWidget(self.amount_line_edit, 0, 1)
         self.bottom_controls.addWidget(QLabel('Категория'), 1, 0)
@@ -79,7 +80,19 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def set_category_dropdown(self, data):
         for tup in data:
-            self.category_dropdown.addItems([tup.name])
+            self.category_dropdown.addItems([str(tup.pk) + ' ' + tup.name])
 
     def on_expense_add_button_clicked(self, slot):
         self.expense_add_button.clicked.connect(slot)
+
+    def get_amount(self) -> float:
+        amount = self.amount_line_edit.text()
+        if ',' in amount:
+            amount = amount.replace(',', '.')
+        return float(amount)  # TODO: обработка исключений
+
+    def get_selected_cat(self) -> int: # TODO: обработка исключений
+        cur_index = self.category_dropdown.currentIndex()
+        selected_cat = self.category_dropdown.itemText(cur_index)
+        cat_pk, cat_name = selected_cat.split(maxsplit=1)
+        return int(cat_pk)
