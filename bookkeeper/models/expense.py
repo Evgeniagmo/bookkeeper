@@ -23,3 +23,7 @@ class Expense:
     added_date: datetime = field(default_factory=datetime.now)
     comment: str = ''
     pk: int = 0
+
+    def make_tuple_from_attr(self, attrs):
+        result = tuple(getattr(self, a) for a in attrs.keys())
+        return result
