@@ -4,12 +4,12 @@
 
 from bookkeeper.models.category import Category
 from bookkeeper.models.expense import Expense
-from bookkeeper.repository.memory_repository import MemoryRepository
+# from bookkeeper.repository.memory_repository import MemoryRepository
 from bookkeeper.repository.sqlite_repository import SQLiteRepository
 from bookkeeper.utils import read_tree
 
 cat_repo = SQLiteRepository[Category](r'D:\Py_project1\bookkeeper\test.db', Category)
-exp_repo = MemoryRepository[Expense]()
+exp_repo = SQLiteRepository[Expense](r'D:\Py_project1\bookkeeper\test.db', Expense)
 
 cats = '''
 продукты
@@ -37,7 +37,7 @@ while True:
     elif cmd[0].isdecimal():
         amount, name = cmd.split(maxsplit=1)
         try:
-            cat = cat_repo.get_all({'parent': name})[0]
+            cat = cat_repo.get_all({'name': name})[0]
         except IndexError:
             print(f'категория {name} не найдена')
             continue

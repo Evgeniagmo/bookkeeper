@@ -98,7 +98,11 @@ class SQLiteRepository(AbstractRepository[T]):
         con.close()
         objs = []
         for tuple_obj in tuple_objs:
-            objs.append(self.cls(*tuple_obj))
+            tuple_pk = int(tuple_obj[0])
+            new_tuple_obj = list(tuple_obj)[1:]
+            new_tuple_obj.append(tuple_pk)
+            new_tuple_obj = tuple(new_tuple_obj)
+            objs.append(self.cls(*new_tuple_obj))
         if where is None:
             return objs
         objs = [obj for obj in objs if
