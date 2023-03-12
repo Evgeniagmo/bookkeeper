@@ -76,11 +76,15 @@ class SQLiteRepository(AbstractRepository[T]):
             cur = con.cursor()
             cur.execute('PRAGMA foreign_keys = ON')
             cur.execute(f'SELECT * FROM {self.table_name} WHERE pk = {pk}')
-            result_obj = cur.fetchone()
+            tuple_obj = cur.fetchone()
         con.close()
-        if result_obj is None:
+        if tuple_obj is None:
             return None
-        obj = self.cls(*result_obj)  # to avoid TestSQLiteRepo(pk=(1, ''), text='')
+        tuple_pk = int(tuple_obj[0])
+        new_tuple_obj = list(tuple_obj)[1:]
+        new_tuple_obj.append(tuple_pk)
+        new_tuple_obj = tuple(new_tuple_obj)
+        obj = self.cls(*new_tuple_obj)  # to avoid TestSQLiteRepo(pk=(1, ''), text='')
         return obj
 
     def get_all(self, where: dict[str, Any] | None = None) -> list[T]:

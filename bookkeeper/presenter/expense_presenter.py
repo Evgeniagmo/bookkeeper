@@ -21,13 +21,11 @@ class ExpensePresenter:
         self.view.set_category_dropdown(self.cat_data)
 
     def handle_expense_add_button_clicked(self):
-
-        # TODO: надо обновить таблицу после добавления
-
         cat_pk = self.view.get_selected_cat()
         amount = self.view.get_amount()
         exp = Expense(amount, cat_pk)
-        self.exp_repo.add(exp)
+        new_pk = self.exp_repo.add(exp)
+        self.exp_data.append(
+            self.exp_repo.get(new_pk).make_tuple_from_attr(get_annotations(Expense)))
+        self.view.set_expense_table(self.exp_data)
         print(cat_pk, amount)
-
-
