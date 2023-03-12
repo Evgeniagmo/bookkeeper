@@ -19,4 +19,4 @@ if __name__ == '__main__':
 
     window = ExpensePresenter(model, view, cat_repo, exp_repo)  # TODO: передать три репозитория
     window.show()
-    app.exec_()
+    app.exec()
