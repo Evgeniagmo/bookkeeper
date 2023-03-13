@@ -17,7 +17,7 @@ class TableModel(QtCore.QAbstractTableModel):
         super().__init__()
         self._data = data
 
-    def data(self, index: Any, role: int) -> Optional[Any]:
+    def data(self, index: Any, role: int) -> Any:
         """
         Структурирует данные в виде таблицы.
         Ряды - внешний список
@@ -116,7 +116,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.setCentralWidget(self.widget)
 
-    def set_expense_table(self, data) -> None:
+    def set_expense_table(self, data: list[list[Any]]) -> None:
         """
         Отобразить в виде таблицы текущее содержание БД с расходами
 
@@ -125,6 +125,10 @@ class MainWindow(QtWidgets.QMainWindow):
         data - список кортежей, содержащих значения атрибутов экземпляров
         класса Expense из БД
         """
+        for i in data:
+            if not isinstance(data, list):
+                raise ValueError("can add only a list into TableModel")
+
         self.item_model = TableModel(data)
         self.expenses_grid.setModel(self.item_model)
 
