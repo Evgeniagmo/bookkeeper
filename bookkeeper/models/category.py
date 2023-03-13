@@ -4,7 +4,6 @@
 from collections import defaultdict
 from dataclasses import dataclass
 from typing import Iterator
-from typing import Any
 
 from ..repository.abstract_repository import AbstractRepository
 
@@ -85,22 +84,6 @@ class Category:
         for cat in repo.get_all():
             subcats[cat.parent].append(cat)
         return get_children(subcats, self.pk)
-
-    #def make_tuple_from_attr(self,
-    #                         attrs: dict[str, Any]) -> tuple[Any, ...]:
-    #    """
-    #    Преобразовать значения атрибутов класса в кортеж. Необходимо
-    #    для более удобного взаимодействия с экземплярами класса в Презентере
-    #    Parameters
-    #    ----------
-    #    attrs - словарь из аннотаций атрибутов класса
-#
-    #    Yields
-    #    -------
-    #    Кортеж, содержащий значения атрибутов данного экземпляра класса
-    #    """
-    #    result = tuple(getattr(self, a) for a in attrs.keys())
-    #    return result
 
     @classmethod
     def create_from_tree(

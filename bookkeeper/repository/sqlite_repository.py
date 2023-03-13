@@ -56,13 +56,13 @@ class SQLiteRepository(AbstractRepository[T]):
         if getattr(obj, 'pk', None) != 0:
             raise ValueError("cannot add object with defined attribute pk")
         names = ', '.join(self.fields.keys())
-        p = ', '.join("?" * len(self.fields))
+        place_holders = ', '.join("?" * len(self.fields))
         values = [getattr(obj, x) for x in self.fields]
         with sqlite3.connect(self.db_file) as con:
             cur = con.cursor()
             cur.execute('PRAGMA foreign_keys = ON')
             cur.execute(
-                f'INSERT INTO {self.table_name} ({names}) VALUES ({p})',
+                f'INSERT INTO {self.table_name} ({names}) VALUES ({place_holders})',
                 values
             )
             obj.pk = cur.lastrowid

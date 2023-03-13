@@ -13,7 +13,7 @@ class TableModel(QtCore.QAbstractTableModel):
     Готовая таблица отображается в основном окне приложения
     """
 
-    def __init__(self, data) -> None:
+    def __init__(self, data: list[list[Any]]) -> None:
         super().__init__()
         self._data = data
 
@@ -125,9 +125,8 @@ class MainWindow(QtWidgets.QMainWindow):
         data - список кортежей, содержащих значения атрибутов экземпляров
         класса Expense из БД
         """
-        for i in data:
-            if not isinstance(data, list):
-                raise ValueError("can add only a list into TableModel")
+        if not isinstance(data, list):
+            raise ValueError("can add only a list into TableModel")
 
         self.item_model = TableModel(data)
         self.expenses_grid.setModel(self.item_model)
@@ -145,9 +144,15 @@ class MainWindow(QtWidgets.QMainWindow):
             self.category_dropdown.addItems([str(tup[-1]) + ' ' + tup[0]])
 
     def on_expense_add_button_clicked(self, slot: Any) -> None:
+        """
+        Функция реагирования на нажатие кнопки добавления записи
+        """
         self.expense_add_button.clicked.connect(slot)
 
     def on_expense_delete_button_clicked(self, slot: Any) -> None:
+        """
+        Функция реагирования на нажатие кнопки удаления записи
+        """
         self.expense_delete_button.clicked.connect(slot)
 
     def get_amount(self) -> float:
@@ -162,9 +167,9 @@ class MainWindow(QtWidgets.QMainWindow):
         amount = self.amount_line_edit.text()
         if ',' in amount:
             amount = amount.replace(',', '.')
-        return float(amount)  # TODO: обработка исключений
+        return float(amount)
 
-    def get_selected_cat(self) -> int:  # TODO: обработка исключений
+    def get_selected_cat(self) -> int:
         """
         Вернуть идентификатор категории, к которой относится новый расход.
 

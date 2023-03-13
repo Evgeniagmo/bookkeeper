@@ -16,12 +16,11 @@ if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
 
     view = MainWindow()
-    MODEL = None  # TODO: здесь должна быть модель
+    MODEL = None
 
     cat_repo = SQLiteRepository[Category](DB_NAME, Category)
     exp_repo = SQLiteRepository[Expense](DB_NAME, Expense)
 
-    # TODO: передать три репозитория
     window = ExpensePresenter(MODEL, view, cat_repo, exp_repo)
     window.show()
     app.exec()
