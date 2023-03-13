@@ -4,21 +4,21 @@ import pytest
 
 from dataclasses import dataclass
 
-
-@dataclass
-class TestSQLiteRepo:
-    pk: int = 0
-    text: str = ''
-
+DB_NAME = r'D:\Py_project1\bookkeeper\test.db'
 
 @pytest.fixture
 def custom_class():
-    return TestSQLiteRepo
+    @dataclass
+    class Custom:
+        text: str = 'abc'
+        pk: int = 0
+
+    return Custom
 
 
 @pytest.fixture
-def repo():
-    return SQLiteRepository('test.db', TestSQLiteRepo)
+def repo(custom_class):
+    return SQLiteRepository(DB_NAME, custom_class)
 
 
 def test_crud(repo, custom_class):
