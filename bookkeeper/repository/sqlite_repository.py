@@ -39,7 +39,7 @@ class SQLiteRepository(AbstractRepository[T]):
         attributes = ', '.join(['pk INTEGER PRIMARY KEY'] + attributes)
         with sqlite3.connect(self.db_file) as con:
             cur = con.cursor()
-            cur.execute(f'DROP TABLE IF EXISTS {self.table_name}')
+            # cur.execute(f'DROP TABLE IF EXISTS {self.table_name}')
             cur.execute(f'CREATE TABLE IF NOT EXISTS {self.table_name} ({attributes})')
         con.close()
 
