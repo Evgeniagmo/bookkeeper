@@ -4,7 +4,7 @@ import pytest
 
 from dataclasses import dataclass
 
-DB_NAME = r'D:\Py_project1\bookkeeper\test.db'
+DB_NAME = 'test.db'
 
 
 @pytest.fixture

@@ -10,7 +10,7 @@ from bookkeeper.models.category import Category
 from bookkeeper.models.expense import Expense
 from bookkeeper.repository.sqlite_repository import SQLiteRepository
 
-DB_NAME = r'D:\Py_project1\bookkeeper\test.db'
+DB_NAME = 'test.db'
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)

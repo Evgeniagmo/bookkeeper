@@ -8,8 +8,8 @@ from bookkeeper.models.expense import Expense
 from bookkeeper.repository.sqlite_repository import SQLiteRepository
 from bookkeeper.utils import read_tree
 
-cat_repo = SQLiteRepository[Category](r'D:\Py_project1\bookkeeper\test.db', Category)
-exp_repo = SQLiteRepository[Expense](r'D:\Py_project1\bookkeeper\test.db', Expense)
+cat_repo = SQLiteRepository[Category]('test.db', Category)
+exp_repo = SQLiteRepository[Expense]('test.db', Expense)
 
 cats = '''
 продукты
