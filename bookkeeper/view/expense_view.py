@@ -80,7 +80,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def set_category_dropdown(self, data):
         for tup in data:
-            self.category_dropdown.addItems([str(tup.pk) + ' ' + tup.name])
+            self.category_dropdown.addItems([str(tup[-1]) + ' ' + tup[0]])
 
     def on_expense_add_button_clicked(self, slot):
         self.expense_add_button.clicked.connect(slot)

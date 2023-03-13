@@ -85,6 +85,10 @@ class Category:
             subcats[cat.parent].append(cat)
         return get_children(subcats, self.pk)
 
+    def make_tuple_from_attr(self, attrs):
+        result = tuple(getattr(self, a) for a in attrs.keys())
+        return result
+
     @classmethod
     def create_from_tree(
             cls,
