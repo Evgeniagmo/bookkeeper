@@ -17,7 +17,7 @@ class TableModel(QtCore.QAbstractTableModel):
         super().__init__()
         self._data = data
 
-    def data(self, index, role: int) -> Any | None:
+    def data(self, index: Any, role: int) -> Optional[Any]:
         """
         Структурирует данные в виде таблицы.
         Ряды - внешний список
@@ -26,7 +26,7 @@ class TableModel(QtCore.QAbstractTableModel):
         if role == QtCore.Qt.DisplayRole:
             return self._data[index.row()][index.column()]
 
-    def rowCount(self, index) -> int:
+    def rowCount(self, index: Any) -> int:
         """
         Определяет количество строк таблицы в окне
 
@@ -36,7 +36,7 @@ class TableModel(QtCore.QAbstractTableModel):
         """
         return len(self._data)
 
-    def columnCount(self, index) -> int:
+    def columnCount(self, index: Any) -> int:
         """
         Определяет количество столбцов для таблицы в окне
 
@@ -58,7 +58,7 @@ class MainWindow(QtWidgets.QMainWindow):
                      отображения бюджета (ПУСТОЕ)
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.item_model = None
@@ -128,7 +128,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.item_model = TableModel(data)
         self.expenses_grid.setModel(self.item_model)
 
-    def set_category_dropdown(self, data) -> None:
+    def set_category_dropdown(self, data: list[tuple[Any]]) -> None:
         """
         Отобразить выпадающий список доступных категорий.
 
@@ -140,10 +140,10 @@ class MainWindow(QtWidgets.QMainWindow):
         for tup in data:
             self.category_dropdown.addItems([str(tup[-1]) + ' ' + tup[0]])
 
-    def on_expense_add_button_clicked(self, slot) -> None:
+    def on_expense_add_button_clicked(self, slot: Any) -> None:
         self.expense_add_button.clicked.connect(slot)
 
-    def on_expense_delete_button_clicked(self, slot) -> None:
+    def on_expense_delete_button_clicked(self, slot: Any) -> None:
         self.expense_delete_button.clicked.connect(slot)
 
     def get_amount(self) -> float:

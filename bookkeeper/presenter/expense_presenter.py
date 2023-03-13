@@ -27,7 +27,7 @@ class ExpensePresenter:
             self.exp_data.append(
                 single_exp.make_tuple_from_attr(get_annotations(Expense)))
 
-    def update_expense_data(self):
+    def update_expense_data(self) -> None:
         """
         Обновляет данные для отрисовки в соответствии с текущим состоянием БД
         """
@@ -41,7 +41,7 @@ class ExpensePresenter:
             data.append(row_exp)
         self.view.set_expense_table(data)
 
-    def show(self):
+    def show(self) -> None:
         """
         Открывает окно приложения, обновляет данные, отрисовывает все содержимое
         """
@@ -49,7 +49,7 @@ class ExpensePresenter:
         self.update_expense_data()
         self.view.set_category_dropdown(self.cat_data)
 
-    def handle_expense_add_button_clicked(self):
+    def handle_expense_add_button_clicked(self) -> None:
         """
         Создает новую трату в репозитории;
         Обновляет таблицу в приложении
@@ -60,7 +60,7 @@ class ExpensePresenter:
         self.exp_repo.add(exp)
         self.update_expense_data()
 
-    def handle_expense_delete_button_clicked(self):
+    def handle_expense_delete_button_clicked(self) -> None:
         """
         Удаляет выбранную пользователем трату из репозитория;
         Обновляет таблицу в приложении

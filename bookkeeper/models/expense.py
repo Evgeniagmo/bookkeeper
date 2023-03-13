@@ -26,7 +26,7 @@ class Expense:
     pk: int = 0
 
     def make_tuple_from_attr(self,
-                             attrs: dict[str, Any]) -> tuple[Any]:
+                             attrs: dict[str, Any]) -> tuple[Any, ...]:
         """
         Преобразовать значения атрибутов класса в кортеж. Необходимо
         для более удобного взаимодействия с экземплярами класса в Презентере
