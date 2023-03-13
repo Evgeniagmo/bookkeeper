@@ -15,6 +15,7 @@ class ExpensePresenter:
                 single_cat.make_tuple_from_attr(get_annotations(Category)))
 
         self.view.on_expense_add_button_clicked(self.handle_expense_add_button_clicked)
+        self.view.on_expense_delete_button_clicked(self.handle_expense_delete_button_clicked)
         self.exp_repo = exp_repo
         self.exp_data = []
         for single_exp in self.exp_repo.get_all():
@@ -32,7 +33,6 @@ class ExpensePresenter:
             data.append(row_exp)
         self.view.set_expense_table(data)
 
-
     def show(self):
         self.view.show()
         self.update_expense_data()
@@ -44,4 +44,10 @@ class ExpensePresenter:
         exp = Expense(amount, cat_pk)
         self.exp_repo.add(exp)
         self.update_expense_data()
-        print(cat_pk, amount)
+        # print(cat_pk, amount)
+
+    def handle_expense_delete_button_clicked(self):
+        exp_pk = self.view.get_selected_exp()
+        self.exp_repo.delete(exp_pk)
+        self.update_expense_data()
+        # print(exp_pk)

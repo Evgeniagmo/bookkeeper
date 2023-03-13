@@ -50,8 +50,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.amount_line_edit = QLineEdit()
         self.amount_line_edit.setValidator(QtGui.QDoubleValidator(1., 100000000., 2, self))
-
         self.bottom_controls.addWidget(self.amount_line_edit, 0, 1)
+
         self.bottom_controls.addWidget(QLabel('Категория'), 1, 0)
 
         self.category_dropdown = QComboBox()
@@ -63,6 +63,15 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.expense_add_button = QPushButton('Добавить')
         self.bottom_controls.addWidget(self.expense_add_button, 2, 1)
+
+        self.bottom_controls.addWidget(QLabel('Номер записи'), 3, 0)
+
+        self.exp_pk_line_edit = QLineEdit()
+        self.exp_pk_line_edit.setValidator(QtGui.QIntValidator(1, 1000000000, self))
+        self.bottom_controls.addWidget(self.exp_pk_line_edit, 3, 1)
+
+        self.expense_delete_button = QPushButton('Удалить')
+        self.bottom_controls.addWidget(self.expense_delete_button, 4, 1)
 
         self.bottom_widget = QWidget()
         self.bottom_widget.setLayout(self.bottom_controls)
@@ -85,6 +94,9 @@ class MainWindow(QtWidgets.QMainWindow):
     def on_expense_add_button_clicked(self, slot):
         self.expense_add_button.clicked.connect(slot)
 
+    def on_expense_delete_button_clicked(self, slot):
+        self.expense_delete_button.clicked.connect(slot)
+
     def get_amount(self) -> float:
         amount = self.amount_line_edit.text()
         if ',' in amount:
@@ -96,3 +108,7 @@ class MainWindow(QtWidgets.QMainWindow):
         selected_cat = self.category_dropdown.itemText(cur_index)
         cat_pk, cat_name = selected_cat.split(maxsplit=1)
         return int(cat_pk)
+
+    def get_selected_exp(self) -> int:
+        exp_pk = self.exp_pk_line_edit.text()
+        return int(exp_pk)
